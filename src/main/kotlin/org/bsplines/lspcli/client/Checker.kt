@@ -140,7 +140,7 @@ class Checker(
     private const val TAB_SIZE = 8
 
     @Suppress("ComplexMethod")
-    private fun printDiagnostic(
+    fun printDiagnostic(
       path: Path,
       document: LspCliTextDocumentItem,
       diagnostic: Diagnostic,
@@ -176,17 +176,17 @@ class Checker(
       ansi.reset()
       println(ansi)
 
-      val lineStartPos: Int = document.convertPosition(Position(fromPosition.line, 0))
-      val lineEndPos: Int = document.convertPosition(Position(fromPosition.line + 1, 0))
-      val line: String = text.substring(lineStartPos, lineEndPos)
+      val linesStartPos: Int = document.convertPosition(Position(fromPosition.line, 0))
+      val linesEndPos: Int = document.convertPosition(Position(toPosition.line + 1, 0))
+      val lines: String = text.substring(linesStartPos, linesEndPos)
 
       println(
-        Ansi.ansi().a(line.substring(0, fromPos - lineStartPos)).bold().fg(color)
-        .a(line.substring(fromPos - lineStartPos, toPos - lineStartPos)).reset()
-        .a(line.substring(toPos - lineStartPos).replaceFirst(TRAILING_WHITESPACE_REGEX, "")),
+        Ansi.ansi().a(lines.substring(0, fromPos - linesStartPos)).bold().fg(color)
+        .a(lines.substring(fromPos - linesStartPos, toPos - linesStartPos)).reset()
+        .a(lines.substring(toPos - linesStartPos).replaceFirst(TRAILING_WHITESPACE_REGEX, "")),
       )
 
-      var indentationSize = guessIndentationSize(text, lineStartPos, fromPos, terminalWidth)
+      var indentationSize = guessIndentationSize(text, linesStartPos, fromPos, terminalWidth)
 
       for (codeActionTitle: String in codeActionTitles) {
         if (indentationSize + codeActionTitle.length > terminalWidth) indentationSize = 0
